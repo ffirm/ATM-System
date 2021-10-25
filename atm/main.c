@@ -24,8 +24,10 @@ void check_login(){
 }
 
 void create_username(){
-    printf("Welcome to Mega bank New User!\nWe are extremely happy that you chose to user our service\n"
+    printf("Welcome to Mega bank New User!\nWe are extremely happy that you chose our service\n"
            "We are thrilled to serve you with our upmost service\n");
+    sleep(2);
+    printf("------------------------------------------------------------------------\n");
     char line[200];
     char user_input[50];
     char pin_input[10];
@@ -132,7 +134,7 @@ void create_username(){
     fprintf(file, "%s,%s,%f\n", user_input, pin_input, cash);
     fclose(file);
     // End of creating user
-    printf("To proceed, the system will be taking you back to login menu");
+    printf("To proceed, the system will be taking you back to login menu\n");
     sleep(2);
     printf("------------------------------------------------------------------------\n");
 //    The function end here and continue at the main function from the line after this function
@@ -177,6 +179,7 @@ int main() {
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
     sleep(2);
     printf("Please login to proceed further\n\n");
+    border_line();
     printf("[1]\tLogin\n");
     printf("[2]\tCreate New Username\n");
     printf("Enter your number:");
@@ -198,7 +201,6 @@ int main() {
 //        Create_user function should be here
     create_username();
     goto greetings;
-
 
     login:
     printf("\n");
