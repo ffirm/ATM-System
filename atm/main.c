@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "string.h"
 #include <unistd.h>
-#include <curses.h>
+//#include <curses.h>
 
 void print_receipt(){
 //    code for printing receipt
@@ -26,7 +26,112 @@ void check_login(){
 void create_username(){
     printf("Welcome to Mega bank New User!\nWe are extremely happy that you chose to user our service\n"
            "We are thrilled to serve you with our upmost service\n");
-    // The code for creating user_name
+    char line[200];
+    char user_input[50];
+    char pin_input[10];
+    int duplicate = 0;
+    int digits = 0;
+    int count = 0;
+    int number = 0;
+    int str_cmp;
+    printf("Create an account\nYour PIN must be 6 digits and contain all numbers.\n");
+    printf("Type \"quit\" to exit the program\n");
+    printf("---------------------------------\n");
+    begin_create:
+    // User input username
+    printf("Enter your username: ");
+    gets(user_input);
+    duplicate = 0;
+    digits = 0;
+    count = 0;
+    number = 0;
+    FILE *stream = fopen("../accounts.csv", "r");
+    // exit point if type "quit"
+    if (strcmp(user_input, "quit") == 0){
+        printf("Thank you!");
+        fclose(stream);
+        exit(0);
+    }
+    // Check if username has already taken or not
+    while (fgets(line, sizeof(line), stream)){
+        char *token;
+        token = strtok(line, ",");
+        while (token != NULL){
+            str_cmp = strcmp(token, user_input);
+            if (str_cmp == 0){
+                printf("Username has already been taken\n");
+                printf("------------------------\n");
+                duplicate++;
+            }
+            token = strtok(NULL, ",");
+        }
+    }
+    // Check if user_input is between 8 - 12 or not
+    if ((strlen(user_input) < 8) || (strlen(user_input) > 12)) {
+        printf("Your username must be in between 8-12 characters\n");
+        printf("------------------------\n");
+        count++;
+    }
+    // Goto begin_create if user_input is invalid
+    if ((duplicate || count) > 0){
+        fclose(stream);
+        goto begin_create;
+    }
+    // Success inputting username and closing the read mode file
+    fclose(stream);
+    stream = NULL;
+    // End of inputting username
+    // User input PIN
+    printf("Enter PIN: ");
+    gets(pin_input);
+    // exit point if type "quit"
+    if (strcmp(pin_input, "quit") == 0){
+        printf("Thank you!");
+        exit(1);
+    }
+    // Check if PIN is 6 digits or not
+    if ((strlen(pin_input) < 6) || (strlen(pin_input) > 6)){
+        printf("Your PIN must be 6-digits\n");
+        printf("------------------------\n");
+        digits++;
+    }
+    // Check if pin_input is all numbers or not
+    for (int i = 0; i < strlen(pin_input); i++){
+        if ((pin_input[i] < 48) || (pin_input[i] > 57)){
+            printf("PIN must be in numbers. \n");
+            printf("------------------------\n");
+            number++;
+            break;
+        }
+    }
+    // Goto begin_create if pin_input is invalid
+    if ((number || digits) > 0){
+        goto begin_create;
+    }
+    // Minimum cash to create an account
+    float cash;
+    printf("Minimum cash of 200BHT is needed to be deposited to create an account\n");
+    printf("------------------------------------------\n");
+    minimum_cash:
+    printf("Please enter the about of cash you want to deposit: \n");
+    scanf("%f", &cash);
+    if (cash < 200){
+        printf("Minimum is 200BHT\n");
+        cash = 0;
+        goto minimum_cash;
+    }
+    // Opening csv file as append mode
+    FILE* file = fopen("../accounts.csv", "a");
+    if (stream == file){
+        printf("Open file to append error");
+        exit(1);
+    }
+    // Set file to the end and start appending user inputs.
+    fseek(file, 0, SEEK_END);
+    printf("%s%s%f", user_input, pin_input, cash);
+    fprintf(file, "%s,%s,%f\n", user_input, pin_input, cash);
+    fclose(file);
+    // End of creating user
     printf("To proceed, the system will be taking you back to login menu");
     sleep(2);
     printf("------------------------------------------------------------------------\n");
@@ -36,6 +141,25 @@ void create_username(){
 void border_line(){
     sleep(2);
     printf("------------------------------------------------------------------------\n");
+}
+
+// This function is not a feature that user can access.
+// This is just for running checks
+void print_account(){
+    FILE* stream = fopen("../accounts.csv", "r");
+    if (stream == NULL){
+        printf("Error can't open file");
+        exit(1);
+    }
+    char line[200];
+    while (fgets(line, sizeof(line), stream)){
+        char *token;
+        token = strtok(line, ",");
+        if (token != NULL){
+            printf("%s", token);
+            strtok(NULL, token);
+        }
+    }
 }
 
 int main() {
