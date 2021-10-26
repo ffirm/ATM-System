@@ -1,22 +1,44 @@
 #include <stdio.h>
 #include "string.h"
 #include <unistd.h>
-#include <curses.h>
+//#include <curses.h>
 
 void print_receipt(){
 //    code for printing receipt
 }
 void user_withdraw(){
-//    The code for withdrawing
+    int amount;
+    printf("Enter the amount of money you would like to withdraw\n");
+    scanf("%d", &amount);
+
+
 }
 void user_deposit(){
-//    The code for depositing
+    int username;
+    printf("Enter the username of your recipient\n");
+    scanf("%d", &username);
+
 }
 void history_check(){
 //    The code for checking history
 }
 void balance_check(){
-//    The code for printing balance
+    FILE *accounts = fopen("accounts.csv", "r");
+    if (accounts == NULL){
+        printf("Bruh\n");
+        exit(1);
+    }
+    char line[200];
+    while(fgets(line, sizeof(line), accounts))  {
+        char *token;
+        token = strtok(line, ",");
+        while(token != NULL)                    {
+            printf("%s", token);
+            token = strtok(NULL, ",");
+                                                }
+        printf("\n");7777
+                                                }
+    printf("Your balance is ******* baht\n");
 }
 
 void check_login(){
@@ -48,6 +70,7 @@ int main() {
 
     int main_menu_input;
     int page_input;
+
 
     greetings:
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
@@ -103,7 +126,7 @@ int main() {
 //    ^^^^
 
     main_menu:
-    printf("*Please type in the number of the service you wishes to operate*\n");
+    printf("*Please type in the number of the service you wish to operate*\n");
     printf("[1]\tDeposit, Withdraw\n");
     printf("[2]\tCheck Balance\n");
     printf("[3]\tSee History\n");
@@ -115,7 +138,7 @@ int main() {
     switch (main_menu_input) {
         case 1:
             border_line();
-            goto deposit;
+            goto deposit_withdraw;
         case 2:
             border_line();
             goto balance;
@@ -160,7 +183,7 @@ int main() {
 //        Instead of this print line Use the provided function instead
 
     balance_check();
-    printf("Your balance is ******* baht\n");
+
 
 //    ^^^
     printf("[1]\tGo back to main menu\n");
@@ -206,8 +229,8 @@ int main() {
     }
 
 
-    deposit:
-    printf("*Select command*\n*Note deposit and withdraw is still a work in progress*\n");
+    deposit_withdraw:
+    printf("*Select command*\n");
     deposit_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
@@ -292,6 +315,7 @@ int main() {
     printf("Process finished, going back to main menu");
     border_line();
     goto main_menu;
+
 
     return 0;
 }
