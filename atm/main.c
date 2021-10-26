@@ -244,7 +244,7 @@ void print_account(){
 }
 
 int main() {
-    char username[50];
+    char* username;
     char user_password[50];
 
     char og_user[]="MEGA";
@@ -282,7 +282,7 @@ int main() {
 
     login:
     fflush(stdin);
-    strcpy(username, login());
+    username = login();
     printf("Username is: %s\n", username); // This is just for checking if it works or not
 
     main_menu:
