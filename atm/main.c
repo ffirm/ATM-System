@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include "string.h"
 #include <unistd.h>
+#include <stdlib.h>
 //#include <curses.h>
 
 void exit_program(){
     printf("Thank you and have a nice day");
     exit(0);
 }
+
+void border_line();
 
 void print_receipt(){
 //    code for printing receipt
@@ -24,8 +27,80 @@ void balance_check(){
 //    The code for printing balance
 }
 
-void check_login(){
-//    The code for checking username from file
+char* login(){
+    char user_input[50];
+    char line[200];
+    int user_count = 3;
+    FILE *stream = fopen("../accounts.csv", "r");
+    if (stream == NULL){
+        printf("Error opening file");
+        fclose(stream);
+        exit(1);
+    }
+    // Checking if user_input is a username in accounts.csv or not
+    // User can input username 3 times, after the third time
+    // if username is still not found, the program will terminate
+    while (user_count != 0) {
+        printf("Enter username: ");
+        fgets(user_input, sizeof(user_input), stdin);
+        sscanf(user_input, "%s", &user_input);
+        if (strcmp(user_input, "quit") == 0) {
+            fclose(stream);
+            exit_program();
+        }
+        // Inside this loop, token is the value of usernames stored in accounts.csv
+        // If username is matched, it will exit the loop and continue to ask for PIN
+        while (fgets(line, sizeof(line), stream)) {
+            char *token;
+            token = strtok(line, ",");
+            if (strcmp(token, user_input) == 0){
+                // Username FOUND
+                goto JUMP;
+            }
+        }
+        printf("Username NOT found\n");
+        printf("You have %d chance(s) left\n", --user_count);
+        fseek(stream, 0, SEEK_SET);
+    }
+    printf("Please contact XXX to unlock your account\n");
+    fclose(stream);
+    exit(0);
+    // End of username checking
+    JUMP:
+    printf("\n");
+    // Begin of PIN checking
+    // token is now the PIN of that specific username
+    char *token;
+    token = strtok(NULL, ",");
+    fclose(stream);
+    int pin_count = 3;
+    // Username has 3 chances to enter PIN correctly
+    while (pin_count != 0){
+        printf("Enter PIN: ");
+        char pin_input[10];
+        fgets(pin_input, sizeof(pin_input), stdin);
+        sscanf(pin_input, "%s", &pin_input);
+        if (strcmp(line, "quit") == 0) {
+            fclose(stream);
+            exit_program();
+        }
+        if (strcmp(token, pin_input) == 0){
+            // Enter PIN successfully
+            goto END;
+        }
+        printf("Wrong PIN\n");
+        printf("You have %d chance(s) left\n", --pin_count);
+    }
+    printf("Account locked\n");
+    exit(0);
+    END:
+    printf("Login successful\n");
+    // Function is returning a char pointer to the username
+    // user_input is only a local variable, so we need to create
+    // a variable that can be access from main()
+    char *rtn_user = (char*)malloc(sizeof(user_input));
+    strcpy(rtn_user, user_input);
+    return rtn_user;
 }
 
 void create_username(){
@@ -169,7 +244,7 @@ void print_account(){
 }
 
 int main() {
-    char username_input[50];
+    char username[50];
     char user_password[50];
 
     char og_user[]="MEGA";
@@ -202,35 +277,13 @@ int main() {
     }
 
     create_user:
-//        Create_user function should be here
     create_username();
     goto greetings;
 
     login:
-    printf("\n");
-    printf("Note: For this test please enter username as MEGA and pin as 123456\nThe pin shouldn't exceed 6 digits\n");
-    printf("Please enter your username:");
-    scanf("%s", username_input);
-    printf("Please enter your banking pin:");
-    scanf("%s", user_password);
-//    strcmp is a function to compare two string, it returns int value of 0 when it is the same
-
-// This is where the check_login function should be placed //VV//
-
-    comparison = strcmp(username_input, og_user) + strcmp(user_password, og_password);
-    if (comparison == 0){
-        printf("Welcome to the banking system %s, have a great time!\n", username_input);
-        printf("The system will now bring you to the main menu please stay put\n");
-        border_line();
-        goto main_menu;
-    }
-    else{
-        printf("Incorrect attempt, please try again\n");
-        border_line();
-        goto login;
-    }
-// If you found that the code do not function properly you can manually code it in this space
-//    ^^^^
+    fflush(stdin);
+    strcpy(username, login());
+    printf("Username is: %s\n", username); // This is just for checking if it works or not
 
     main_menu:
     printf("*Please type in the number of the service you wishes to operate*\n");
