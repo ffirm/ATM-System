@@ -130,7 +130,6 @@ void create_username(){
     }
     // Set file to the end and start appending user inputs.
     fseek(file, 0, SEEK_END);
-    printf("%s%s%f", user_input, pin_input, cash);
     fprintf(file, "%s,%s,%f\n", user_input, pin_input, cash);
     fclose(file);
     // End of creating user
