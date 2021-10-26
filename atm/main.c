@@ -3,6 +3,11 @@
 #include <unistd.h>
 //#include <curses.h>
 
+void exit_program(){
+    printf("Thank you and have a nice day");
+    exit(0);
+}
+
 void print_receipt(){
 //    code for printing receipt
 }
