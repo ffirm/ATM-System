@@ -9,8 +9,6 @@ void exit_program(){
     exit(0);
 }
 
-void border_line();
-
 void print_receipt(){
 //    code for printing receipt
 }
@@ -24,7 +22,22 @@ void history_check(){
 //    The code for checking history
 }
 void balance_check(){
-//    The code for printing balance
+//    FILE *accounts = fopen("../accounts.csv", "r");
+//    if (accounts == NULL){
+//        printf("Unable to open file");
+//        exit(1);
+//    }
+//    char line[200];
+//    while(fgets(line, sizeof(line), accounts)){
+//        char *token;
+//        token = strtok(line, ",");
+//        while(token != NULL){
+//            printf("%s", token);
+//            token = strtok(NULL, ",");
+//        }
+//        awk -F "\"*,\"*" '{print $2}' accounts.txt
+//        printf("\n");
+//    }
 }
 
 char* login(){
