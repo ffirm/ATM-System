@@ -46,7 +46,7 @@ void history_check(char *A) {
     char user[50];
     char date[50];
     char action[50];
-    FILE *stream = fopen("../logs.csv", "r");
+    FILE *stream = fopen("../Action.csv", "r");
     if (stream == NULL) {
         printf("Error opening file");
         fclose(stream);
@@ -315,6 +315,11 @@ int main() {
 
     int main_menu_input;
     int page_input;
+
+    char line[200];
+    char user[50];
+    char date[50];
+    char action[50];
 
     greetings:
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
