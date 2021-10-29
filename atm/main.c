@@ -24,7 +24,6 @@ void pin_change(char A[]){
 
         }
     }
-
     }
 
 
@@ -42,8 +41,36 @@ void user_withdraw(){
 void user_deposit(){
 //    The code for depositing
 }
-void history_check(){
-//    The code for checking history
+void history_check(char *A) {
+    char line[200];
+    char user[50];
+    char date[50];
+    char action[50];
+    FILE *stream = fopen("../logs.csv", "r");
+    if (stream == NULL) {
+        printf("Error opening file");
+        fclose(stream);
+    }
+    while (fgets(line, 200, stream)) {
+        char *token;
+        token = strtok(line, ",");
+        while (token != NULL) {
+            if (strcmp(token, A) == 0) {
+                strcpy(user, token);
+                token = strtok(NULL, ",");
+                strcpy(date, token);
+                token = strtok(NULL, ",");
+                strcpy(action, token);
+                token = strtok(NULL, ",");
+            }
+        }
+        if (atoi(action) < 0) {
+            printf("%s has transferred/withdraw : %d on %s\n", user, atoi(action), date);
+        }
+        else {
+            printf("%s has deposited : %d on %s\n", user, atoi(action), date);
+        }
+    }
 }
 void balance_check(char *u){
     FILE *accounts = fopen("../accounts.csv", "r");
@@ -402,12 +429,7 @@ int main() {
     }
 
     history:
-    //        Instead of this print line Use the provided function instead
-
-    history_check();
-    printf("Your history is *******\n");
-
-//    ^^^
+    history_check(username);
     printf("[1]\tGo back to main menu\n");
     history_option:
     printf("[2]\tExit\n");
