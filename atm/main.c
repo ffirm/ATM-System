@@ -314,7 +314,7 @@ int main() {
     login:
     fflush(stdin);
     username = login();
-    printf("Username is: %s\n", username); // This is just for checking if it works or not
+    printf("Username is: %s\n", username);// This is just for checking if it works or not
 
     main_menu:
     printf("*Please type in the number of the service you wishes to operate*\n");
