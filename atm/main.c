@@ -3,6 +3,30 @@
 #include <unistd.h>
 #include <stdlib.h>
 //#include <curses.h>
+void pin_change(char A[]){
+    char line[200];
+    FILE *stream = fopen("../accounts.csv", "a+");
+    if (stream == NULL){
+        printf("Error opening file");
+        fclose(stream);
+        exit(1);
+    }
+    while (fgets(line, sizeof(line), stream)) {
+        char *token;
+        token = strtok(line, ",");
+        while (token != NULL){
+            if (strcmp(token, A)== 0){
+                token = strtok(NULL, ",");
+                fgets(line, sizeof(line), stream);
+                token = strtok(line, ",");
+                printf("%s", token);
+            }
+
+        }
+    }
+
+    }
+
 
 void exit_program(){
     printf("Thank you and have a nice day");
@@ -55,8 +79,7 @@ char* login(){
     // if username is still not found, the program will terminate
     while (user_count != 0) {
         printf("Enter username: ");
-        fgets(user_input, sizeof(user_input), stdin);
-        sscanf(user_input, "%s", &user_input);
+        scanf("%s", user_input);
         if (strcmp(user_input, "quit") == 0) {
             fclose(stream);
             exit_program();
@@ -91,8 +114,7 @@ char* login(){
     while (pin_count != 0){
         printf("Enter PIN: ");
         char pin_input[10];
-        fgets(pin_input, sizeof(pin_input), stdin);
-        sscanf(pin_input, "%s", &pin_input);
+        scanf("%s", pin_input);
         if (strcmp(line, "quit") == 0) {
             fclose(stream);
             exit_program();
@@ -259,10 +281,6 @@ void print_account(){
 int main() {
     char* username;
     char user_password[50];
-
-    char og_user[]="MEGA";
-    char og_password[]="123456";
-    int comparison;
 
     int main_menu_input;
     int page_input;
