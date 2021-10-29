@@ -36,8 +36,10 @@ void print_receipt(){
 //    code for printing receipt
 }
 void user_withdraw(){
-//    The code for withdrawing
+    printf("hi\n");
 }
+
+
 void user_deposit(){
 //    The code for depositing
 }
@@ -72,13 +74,13 @@ void history_check(char *A) {
         }
     }
 }
-void balance_check(char *u){
+unsigned char balance_check(char *u){
+    char line[200];
     FILE *accounts = fopen("../accounts.csv", "r");
     if (accounts == NULL){
         printf("Unable to open file");
         exit(1);
     }
-    char line[200];
     while(fgets(line, sizeof(line), accounts)){
         char *token;
         token = strtok(line, ",");
@@ -86,13 +88,18 @@ void balance_check(char *u){
             if (strcmp(token, u) == 0){
                 token = strtok(NULL, ",");
                 token = strtok(NULL, ",");
-                printf("%s", token);
+                printf("%.2f", atof(token));
+                char *balance = (char*)malloc(sizeof(token));
+                strcpy(balance, token);
+                return *balance;
             }
             else{
                 token = strtok(NULL, ",");
             }
         }
     }
+
+    return 0;
 }
 
 char* login(){
@@ -163,7 +170,7 @@ char* login(){
     printf("Login successful\n");
     // Function is returning a char pointer to the username
     // user_input is only a local variable, so we need to create
-    // a variable that can be access from main()
+    // a variable that can be accessed from main()
     char *rtn_user = (char*)malloc(sizeof(user_input));
     strcpy(rtn_user, user_input);
     return rtn_user;
@@ -286,7 +293,7 @@ void create_username(){
 }
 
 void border_line(){
-    sleep(2);
+//    sleep(2);
     printf("------------------------------------------------------------------------\n");
 }
 
@@ -321,6 +328,7 @@ int main() {
     char date[50];
     char action[50];
 
+
     greetings:
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
     sleep(2);
@@ -353,7 +361,7 @@ int main() {
     printf("Username is: %s\n", username);// This is just for checking if it works or not
 
     main_menu:
-    printf("*Please type in the number of the service you wishes to operate*\n");
+    printf("*Please type in the number of the service you wish to operate*\n");
     printf("[1]\tDeposit, Withdraw\n");
     printf("[2]\tCheck Balance\n");
     printf("[3]\tSee History\n");
@@ -407,13 +415,9 @@ int main() {
 
 
     balance:
-    printf("%s balance: ", username);
+    printf("%s your balance is: ", username);
     balance_check(username);
     printf("\n");
-//        Instead of this print line Use the provided function instead
-
-//    balance_check();
-//    printf("Your balance is ******* baht\n");
 
 //    ^^^
     printf("[1]\tGo back to main menu\n");
@@ -455,7 +459,7 @@ int main() {
 
 
     deposit:
-    printf("*Select command*\n*Note deposit and withdraw is still a work in progress*\n");
+    printf("*Select command*\n");
     deposit_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
@@ -485,6 +489,8 @@ int main() {
 
     withdraw_process:
     user_withdraw();
+    int balance = balance_check(username);
+    printf("%.2d\n", balance);
     user_withdraw_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
@@ -532,7 +538,6 @@ int main() {
             border_line();
             goto user_deposit_option;
     }
-
 
     get_receipt:
 //        If this is a hassle you can place the code directly into the switch case
