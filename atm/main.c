@@ -46,22 +46,21 @@ void history_check(){
 //    The code for checking history
 }
 void balance_check(){
-//    FILE *accounts = fopen("../accounts.csv", "r");
-//    if (accounts == NULL){
-//        printf("Unable to open file");
-//        exit(1);
-//    }
-//    char line[200];
-//    while(fgets(line, sizeof(line), accounts)){
-//        char *token;
-//        token = strtok(line, ",");
-//        while(token != NULL){
-//            printf("%s", token);
-//            token = strtok(NULL, ",");
-//        }
-//        awk -F "\"*,\"*" '{print $2}' accounts.txt
-//        printf("\n");
-//    }
+    FILE *accounts = fopen("../accounts.csv", "r");
+    if (accounts == NULL){
+        printf("Unable to open file");
+        exit(1);
+    }
+    char line[200];
+    while(fgets(line, sizeof(line), accounts)){
+        char *token;
+        token = strtok(line, ",");
+        while(token != NULL){
+            printf("%s", token);
+            token = strtok(NULL, ",");
+        }
+        printf("\n");
+    }
 }
 
 char* login(){
