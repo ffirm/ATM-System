@@ -45,23 +45,27 @@ void user_deposit(){
 void history_check(){
 //    The code for checking history
 }
-void balance_check(){
-//    FILE *accounts = fopen("../accounts.csv", "r");
-//    if (accounts == NULL){
-//        printf("Unable to open file");
-//        exit(1);
-//    }
-//    char line[200];
-//    while(fgets(line, sizeof(line), accounts)){
-//        char *token;
-//        token = strtok(line, ",");
-//        while(token != NULL){
-//            printf("%s", token);
-//            token = strtok(NULL, ",");
-//        }
-//        awk -F "\"*,\"*" '{print $2}' accounts.txt
-//        printf("\n");
-//    }
+void balance_check(char *u){
+    FILE *accounts = fopen("../accounts.csv", "r");
+    if (accounts == NULL){
+        printf("Unable to open file");
+        exit(1);
+    }
+    char line[200];
+    while(fgets(line, sizeof(line), accounts)){
+        char *token;
+        token = strtok(line, ",");
+        while(token != NULL){
+            if (strcmp(token, u) == 0){
+                token = strtok(NULL, ",");
+                token = strtok(NULL, ",");
+                printf("%s", token);
+            }
+            else{
+                token = strtok(NULL, ",");
+            }
+        }
+    }
 }
 
 char* login(){
@@ -371,10 +375,13 @@ int main() {
 
 
     balance:
+    printf("%s balance: ", username);
+    balance_check(username);
+    printf("\n");
 //        Instead of this print line Use the provided function instead
 
-    balance_check();
-    printf("Your balance is ******* baht\n");
+//    balance_check();
+//    printf("Your balance is ******* baht\n");
 
 //    ^^^
     printf("[1]\tGo back to main menu\n");
