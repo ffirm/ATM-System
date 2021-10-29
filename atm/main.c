@@ -45,7 +45,7 @@ void user_deposit(){
 void history_check(){
 //    The code for checking history
 }
-void balance_check(){
+void balance_check(char *u){
     FILE *accounts = fopen("../accounts.csv", "r");
     if (accounts == NULL){
         printf("Unable to open file");
@@ -56,10 +56,15 @@ void balance_check(){
         char *token;
         token = strtok(line, ",");
         while(token != NULL){
-            printf("%s", token);
-            token = strtok(NULL, ",");
+            if (strcmp(token, u) == 0){
+                token = strtok(NULL, ",");
+                token = strtok(NULL, ",");
+                printf("%s", token);
+            }
+            else{
+                token = strtok(NULL, ",");
+            }
         }
-        printf("\n");
     }
 }
 
@@ -370,10 +375,13 @@ int main() {
 
 
     balance:
+    printf("%s balance: ", username);
+    balance_check(username);
+    printf("\n");
 //        Instead of this print line Use the provided function instead
 
-    balance_check();
-    printf("Your balance is ******* baht\n");
+//    balance_check();
+//    printf("Your balance is ******* baht\n");
 
 //    ^^^
     printf("[1]\tGo back to main menu\n");
