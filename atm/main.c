@@ -327,6 +327,7 @@ int main() {
 
     int main_menu_input;
     int page_input;
+    
 
     greetings:
     fflush(stdin);
