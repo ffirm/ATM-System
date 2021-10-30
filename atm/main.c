@@ -24,6 +24,7 @@ void pin_change(char A[]){
 
         }
     }
+    fclose(stream);
     }
 
 
@@ -43,19 +44,21 @@ void user_withdraw(){
 void user_deposit(){
 //    The code for depositing
 }
-void history_check(char *A) {
-    char line[200];
+
+void history(char A[]) {
+    char l[200];
     char user[50];
     char date[50];
     char action[50];
-    FILE *stream = fopen("../Action.csv", "r");
-    if (stream == NULL) {
+    FILE *hist = fopen("../Action.csv", "r");
+    if (hist == NULL) {
         printf("Error opening file");
-        fclose(stream);
+        fclose(hist);
     }
-    while (fgets(line, 200, stream)) {
+
+    while (fgets(l, sizeof(l) , hist)) {
         char *token;
-        token = strtok(line, ",");
+        token = strtok(l, ",");
         while (token != NULL) {
             if (strcmp(token, A) == 0) {
                 strcpy(user, token);
@@ -67,13 +70,15 @@ void history_check(char *A) {
             }
         }
         if (atoi(action) < 0) {
-            printf("%s has transferred/withdraw : %d on %s\n", user, atoi(action), date);
+            printf("%s has transferred/withdraw\t: %d\t on %s\n", user, atoi(action), date);
         }
         else {
-            printf("%s has deposited : %d on %s\n", user, atoi(action), date);
+            printf("%s has deposited\t\t\t: +%d\t on %s\n", user, atoi(action), date);
         }
     }
+    fclose(hist);
 }
+
 unsigned char balance_check(char *u){
     char line[200];
     FILE *accounts = fopen("../accounts.csv", "r");
@@ -98,7 +103,7 @@ unsigned char balance_check(char *u){
             }
         }
     }
-
+    fclose(accounts);
     return 0;
 }
 
@@ -323,12 +328,6 @@ int main() {
     int main_menu_input;
     int page_input;
 
-    char line[200];
-    char user[50];
-    char date[50];
-    char action[50];
-
-
     greetings:
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
     sleep(2);
@@ -438,7 +437,7 @@ int main() {
     }
 
     history:
-    history_check(username);
+    history(username);
     printf("[1]\tGo back to main menu\n");
     history_option:
     printf("[2]\tExit\n");
