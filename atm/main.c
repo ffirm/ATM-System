@@ -327,7 +327,7 @@ int main() {
 
     int main_menu_input;
     int page_input;
-    
+
 
     greetings:
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
