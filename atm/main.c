@@ -330,6 +330,8 @@ int main() {
 
 
     greetings:
+    fflush(stdin);
+    main_menu_input = 0;
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
     sleep(2);
     printf("Please login to proceed further\n\n");
