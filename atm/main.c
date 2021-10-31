@@ -385,7 +385,7 @@ void print_account(){
 
 int main() {
     char username[] = "babywoowoo";
-    char pin[] = "112311";
+    char pin[] = "789456";
     change_pin_new(username, pin);
 //    char* username;
 //    char user_password[50];
