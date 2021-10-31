@@ -3,29 +3,51 @@
 #include <unistd.h>
 #include <stdlib.h>
 //#include <curses.h>
-void pin_change(char A[]){
+void change_pin_new(char C[], char B[]){
     char line[200];
-    FILE *stream = fopen("../accounts.csv", "a+");
-    if (stream == NULL){
+    char user[50];
+    char date[50];
+    char action[50];
+    char user_n[50];
+    char date_n[50];
+    char action_n[50];
+    FILE *str = fopen("accounts.csv", "r");
+    FILE *new = fopen("new.csv", "w");
+    if (str == NULL) {
         printf("Error opening file");
-        fclose(stream);
-        exit(1);
-    }
-    while (fgets(line, sizeof(line), stream)) {
+        fclose(str);}
+    if (new == NULL) {
+        printf("Error opening file");
+        fclose(new);}
+
+    while(fgets(line, 200, str)){
         char *token;
         token = strtok(line, ",");
-        while (token != NULL){
-            if (strcmp(token, A)== 0){
-                token = strtok(NULL, ",");
-                fgets(line, sizeof(line), stream);
-                token = strtok(line, ",");
-                printf("%s", token);
-            }
-
+        if (strcmp(token, C) == 0){
+            strcpy(user, token);
+            token = strtok(NULL, ",");
+            strcpy(date, token);
+            token = strtok(NULL, ",");
+            strcpy(action, token);
+            token = strtok(NULL, ",");
+            strcpy(date, B);
+            fprintf(new, "%s,%s,%s", user, date, action);
+        }
+        else{
+            strcpy(user_n, token);
+            token = strtok(NULL, ",");
+            strcpy(date_n, token);
+            token = strtok(NULL, ",");
+            strcpy(action_n, token);
+            token = strtok(NULL, ",");
+            fprintf(new, "%s,%s,%s", user_n, date_n, action_n);
         }
     }
-    fclose(stream);
-    }
+    remove("accounts.csv");
+    rename("new.csv", "accounts.csv");
+    fclose(str);
+    fclose(new);
+}
 
 
 void exit_program(){
@@ -362,238 +384,241 @@ void print_account(){
 }
 
 int main() {
-    char* username;
-    char user_password[50];
-
-    int main_menu_input;
-    int page_input;
-
-
-    greetings:
-    fflush(stdin);
-    main_menu_input = 0;
-    printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
-    sleep(2);
-    printf("Please login to proceed further\n\n");
-    border_line();
-    printf("[1]\tLogin\n");
-    printf("[2]\tCreate New Username\n");
-    printf("Enter your number:");
-    scanf("%d", &main_menu_input);
-    switch (main_menu_input) {
-        case 1:
-            border_line();
-            goto login;
-        case 2:
-            border_line();
-            goto create_user;
-        default:
-            printf("Invalid operator\n Please try again");
-            border_line();
-            goto greetings;
-    }
-
-    create_user:
-    create_username();
-    goto greetings;
-
-    login:
-    fflush(stdin);
-    username = login();
-    printf("Username is: %s\n", username);// This is just for checking if it works or not
-
-    main_menu:
-    printf("*Please type in the number of the service you wish to operate*\n");
-    printf("[1]\tDeposit, Withdraw\n");
-    printf("[2]\tCheck Balance\n");
-    printf("[3]\tSee History\n");
-    printf("[4]\tChange Pin\n");
-    printf("[5]\tTransfer\n");
-    printf("[6]\tExit Program\n");
-    printf("Enter your number:");
-    scanf("%d", &main_menu_input);
-    switch (main_menu_input) {
-        case 1:
-            border_line();
-            goto deposit;
-        case 2:
-            border_line();
-            goto balance;
-        case 3:
-            border_line();
-            goto history;
-        case 4:
-            border_line();
-            goto pin_change;
-        case 5:
-            border_line();
-            goto transfer;
-        case 6:
-            border_line();
-            printf("Thank you for using our bank have a good time!\n");
-            goto exit;
-
-        default:
-            printf("Invalid operator, please enter again\n");
-            border_line();
-            goto main_menu;
-    }
-
-
-    pin_change:
-//    The code for changing pin here, however if it's too long Then use a function
-    printf("Process finished, taking you back to main menu");
-    border_line();
-    goto main_menu;
-
-    transfer:
-//    The code for transferring money here, however if it's too long Then use a function
-    printf("Process finished, taking you back to main menu");
-    border_line();
-    goto main_menu;
-
-    exit:
-    _exit(0);
-
-
-    balance:
-    printf("%s your balance is: ", username);
-    double balance = balance_check(username);
-    printf("%.2f", balance);
-    printf("\n");
-
-//    ^^^
-    printf("[1]\tGo back to main menu\n");
-    balance_option:
-    printf("[2]\tExit\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        default:
-            border_line();
-            goto balance_option;
-    }
-
-    history:
-    history(username);
-    printf("[1]\tGo back to main menu\n");
-    history_option:
-    printf("[2]\tExit\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        default:
-            printf("Invalid operator, please enter again\n");
-            border_line();
-            goto history_option;
-    }
-
-
-    deposit:
-    printf("*Select command*\n");
-    deposit_option:
-    printf("[1]\tGo back to main menu\n");
-    printf("[2]\tExit\n");
-    printf("[3]\tDeposit\n");
-    printf("[4]\tWithdraw\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        case 3:
-            border_line();
-            goto deposit_process;
-        case 4:
-            border_line();
-            goto withdraw_process;
-        default:
-            printf("Invalid operator, please enter again\n");
-            border_line();
-            goto deposit_option;
-    }
-
-
-    withdraw_process:
-    printf("Please enter amount of withdrawal: ");
-    double amount;
-    scanf("%lf", &amount);
-    double withdraw_balance = balance_check(username);
-    user_withdraw(withdraw_balance, amount);
-    user_withdraw_option:
-    printf("[1]\tGo back to main menu\n");
-    printf("[2]\tExit\n");
-    printf("[3]\tGet receipt\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        case 3:
-            border_line();
-            goto get_receipt;
-        case 4:
-            border_line();
-            goto withdraw_process;
-        default:
-            printf("Invalid operator, please enter again\n");
-            border_line();
-            goto user_withdraw_option;
-    }
-
-
-    deposit_process:
-//  function call for deposit process
-    user_deposit();
-    user_deposit_option:
-    printf("[1]\tGo back to main menu\n");
-    printf("[2]\tExit\n");
-    printf("[3]\tGet receipt\n");
-    printf("[4]\tRetry Withdrawal\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        case 3:
-            border_line();
-            goto get_receipt;
-        default:
-            printf("Invalid operator, please enter again\n");
-            border_line();
-            goto user_deposit_option;
-    }
-
-    get_receipt:
-//        If this is a hassle you can place the code directly into the switch case
-    print_receipt();
-    printf("Process finished, going back to main menu");
-    border_line();
-    goto main_menu;
+    char username[] = "Kittiphong";
+    char pin[] = "777888";
+    change_pin_new(username, pin);
+//    char* username;
+//    char user_password[50];
+//
+//    int main_menu_input;
+//    int page_input;
+//
+//
+//    greetings:
+//    fflush(stdin);
+//    main_menu_input = 0;
+//    printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
+//    sleep(2);
+//    printf("Please login to proceed further\n\n");
+//    border_line();
+//    printf("[1]\tLogin\n");
+//    printf("[2]\tCreate New Username\n");
+//    printf("Enter your number:");
+//    scanf("%d", &main_menu_input);
+//    switch (main_menu_input) {
+//        case 1:
+//            border_line();
+//            goto login;
+//        case 2:
+//            border_line();
+//            goto create_user;
+//        default:
+//            printf("Invalid operator\n Please try again");
+//            border_line();
+//            goto greetings;
+//    }
+//
+//    create_user:
+//    create_username();
+//    goto greetings;
+//
+//    login:
+//    fflush(stdin);
+//    username = login();
+//    printf("Username is: %s\n", username);// This is just for checking if it works or not
+//
+//    main_menu:
+//    printf("*Please type in the number of the service you wish to operate*\n");
+//    printf("[1]\tDeposit, Withdraw\n");
+//    printf("[2]\tCheck Balance\n");
+//    printf("[3]\tSee History\n");
+//    printf("[4]\tChange Pin\n");
+//    printf("[5]\tTransfer\n");
+//    printf("[6]\tExit Program\n");
+//    printf("Enter your number:");
+//    scanf("%d", &main_menu_input);
+//    switch (main_menu_input) {
+//        case 1:
+//            border_line();
+//            goto deposit;
+//        case 2:
+//            border_line();
+//            goto balance;
+//        case 3:
+//            border_line();
+//            goto history;
+//        case 4:
+//            border_line();
+//            goto pin_change;
+//        case 5:
+//            border_line();
+//            goto transfer;
+//        case 6:
+//            border_line();
+//            printf("Thank you for using our bank have a good time!\n");
+//            goto exit;
+//
+//        default:
+//            printf("Invalid operator, please enter again\n");
+//            border_line();
+//            goto main_menu;
+//    }
+//
+//
+//    pin_change:
+////    The code for changing pin here, however if it's too long Then use a function
+//    printf("Process finished, taking you back to main menu");
+//    border_line();
+//    goto main_menu;
+//
+//    transfer:
+////    The code for transferring money here, however if it's too long Then use a function
+//    printf("Process finished, taking you back to main menu");
+//    border_line();
+//    goto main_menu;
+//
+//    exit:
+//    _exit(0);
+//
+//
+//    balance:
+//    printf("%s your balance is: ", username);
+//    double balance = balance_check(username);
+//    printf("%.2f", balance);
+//    printf("\n");
+//
+////    ^^^
+//    printf("[1]\tGo back to main menu\n");
+//    balance_option:
+//    printf("[2]\tExit\n");
+//    printf("Enter your number:");
+//    scanf("%d", &page_input);
+//    switch (page_input) {
+//        case 1:
+//            border_line();
+//            goto main_menu;
+//        case 2:
+//            border_line();
+//            goto exit;
+//        default:
+//            border_line();
+//            goto balance_option;
+//    }
+//
+//    history:
+//    history(username);
+//    printf("[1]\tGo back to main menu\n");
+//    history_option:
+//    printf("[2]\tExit\n");
+//    printf("Enter your number:");
+//    scanf("%d", &page_input);
+//    switch (page_input) {
+//        case 1:
+//            border_line();
+//            goto main_menu;
+//        case 2:
+//            border_line();
+//            goto exit;
+//        default:
+//            printf("Invalid operator, please enter again\n");
+//            border_line();
+//            goto history_option;
+//    }
+//
+//
+//    deposit:
+//    printf("*Select command*\n");
+//    deposit_option:
+//    printf("[1]\tGo back to main menu\n");
+//    printf("[2]\tExit\n");
+//    printf("[3]\tDeposit\n");
+//    printf("[4]\tWithdraw\n");
+//    printf("Enter your number:");
+//    scanf("%d", &page_input);
+//    switch (page_input) {
+//        case 1:
+//            border_line();
+//            goto main_menu;
+//        case 2:
+//            border_line();
+//            goto exit;
+//        case 3:
+//            border_line();
+//            goto deposit_process;
+//        case 4:
+//            border_line();
+//            goto withdraw_process;
+//        default:
+//            printf("Invalid operator, please enter again\n");
+//            border_line();
+//            goto deposit_option;
+//    }
+//
+//
+//    withdraw_process:
+//    printf("Please enter amount of withdrawal: ");
+//    double amount;
+//    scanf("%lf", &amount);
+//    double withdraw_balance = balance_check(username);
+//    user_withdraw(withdraw_balance, amount);
+//    user_withdraw_option:
+//    printf("[1]\tGo back to main menu\n");
+//    printf("[2]\tExit\n");
+//    printf("[3]\tGet receipt\n");
+//    printf("Enter your number:");
+//    scanf("%d", &page_input);
+//    switch (page_input) {
+//        case 1:
+//            border_line();
+//            goto main_menu;
+//        case 2:
+//            border_line();
+//            goto exit;
+//        case 3:
+//            border_line();
+//            goto get_receipt;
+//        case 4:
+//            border_line();
+//            goto withdraw_process;
+//        default:
+//            printf("Invalid operator, please enter again\n");
+//            border_line();
+//            goto user_withdraw_option;
+//    }
+//
+//
+//    deposit_process:
+////  function call for deposit process
+//    user_deposit();
+//    user_deposit_option:
+//    printf("[1]\tGo back to main menu\n");
+//    printf("[2]\tExit\n");
+//    printf("[3]\tGet receipt\n");
+//    printf("[4]\tRetry Withdrawal\n");
+//    printf("Enter your number:");
+//    scanf("%d", &page_input);
+//    switch (page_input) {
+//        case 1:
+//            border_line();
+//            goto main_menu;
+//        case 2:
+//            border_line();
+//            goto exit;
+//        case 3:
+//            border_line();
+//            goto get_receipt;
+//        default:
+//            printf("Invalid operator, please enter again\n");
+//            border_line();
+//            goto user_deposit_option;
+//    }
+//
+//    get_receipt:
+////        If this is a hassle you can place the code directly into the switch case
+//    print_receipt();
+//    printf("Process finished, going back to main menu");
+//    border_line();
+//    goto main_menu;
 
     return 0;
 }
