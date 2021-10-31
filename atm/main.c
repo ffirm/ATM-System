@@ -11,8 +11,8 @@ void change_pin_new(char C[], char B[]){
     char user_n[50];
     char date_n[50];
     char action_n[50];
-    FILE *str = fopen("accounts.csv", "r");
-    FILE *new = fopen("new.csv", "w");
+    FILE *str = fopen("../accounts.csv", "r");
+    FILE *new = fopen("../new.csv", "w");
     if (str == NULL) {
         printf("Error opening file");
         fclose(str);}
@@ -43,8 +43,8 @@ void change_pin_new(char C[], char B[]){
             fprintf(new, "%s,%s,%s", user_n, date_n, action_n);
         }
     }
-    remove("accounts.csv");
-    rename("new.csv", "accounts.csv");
+    remove("../accounts.csv");
+    rename("../new.csv", "../accounts.csv");
     fclose(str);
     fclose(new);
 }
@@ -384,8 +384,8 @@ void print_account(){
 }
 
 int main() {
-    char username[] = "Kittiphong";
-    char pin[] = "777888";
+    char username[] = "babywoowoo";
+    char pin[] = "111111";
     change_pin_new(username, pin);
 //    char* username;
 //    char user_password[50];
