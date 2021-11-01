@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 //#include <curses.h>
+//                    username    pin
 void change_pin_new(char C[], char B[]){
     char line[200];
     char user[50];
@@ -58,7 +59,8 @@ void exit_program(){
 void print_receipt(){
 //    code for printing receipt
 }
-void user_withdraw(double balance, double amount){
+void user_withdraw(double balance, double amount, char*u){
+    char date[] = "11/1/2021";
     if(balance < 0){
         printf("Unable to continue withdrawal.\n");
         printf("Your remaining balance: .2%lf\n", balance);
@@ -74,47 +76,75 @@ void user_withdraw(double balance, double amount){
         balance = balance - amount;
         printf("Withdrawal Successful\n");
         printf("Your remaining balance: %.2lf\n", balance);
-//      from this part onwards will belong in the get receipt function
-        int amount_new;
-        amount_new = amount;
-        int thousand = amount_new / 1000;
-        amount = amount_new % 1000;
-        int fvehundred = amount_new / 1000;
-        amount = amount_new % 1000;
-        int onehundred = amount_new / 1000;
-        amount = amount_new % 1000;
-        int ten = amount_new / 1000;
-        amount = amount_new % 1000;
-        int one = amount_new / 1000;
-        amount = amount_new % 1000;
-        if(thousand != 0){
-            printf("Thousand Bank Notes: \t\t%d\n", thousand);
+        FILE *update = fopen("../logs.csv", "a");
+        if (update == NULL) {
+            printf("Error opening file");
+            fclose(update);
         }
-        if(fvehundred != 0){
-            printf("Five Hundred Bank Notes: \t%d\n", fvehundred);
-        }
-        if(onehundred != 0){
-            printf("One hundred Bank notes: \t%d\n", onehundred);
-        }
-        if(ten != 0){
-            printf("Ten Baht Coins: \t\t%d\n", ten);
-        }
-        if(one != 0){
-            printf("One Baht Coins: \t\t%d\n", one);
-        }
+        fprintf(update, "\n%s,%s,-%lf", u, date, amount);
+        fclose(update);
+//      THIS PART ONWARDS WILL BELONG IN THE GET_RECEIPT FUNCTION
+//        int amount_new;
+//        amount_new = amount;
+//        int thousand = amount_new / 1000;
+//        amount = amount_new % 1000;
+//        int fvehundred = amount_new / 1000;
+//        amount = amount_new % 1000;
+//        int onehundred = amount_new / 1000;
+//        amount = amount_new % 1000;
+//        int ten = amount_new / 1000;
+//        amount = amount_new % 1000;
+//        int one = amount_new / 1000;
+//        amount = amount_new % 1000;
+//        if(thousand != 0){
+//            printf("Thousand Bank Notes: \t\t%d\n", thousand);
+//        }
+//        if(fvehundred != 0){
+//            printf("Five Hundred Bank Notes: \t%d\n", fvehundred);
+//        }
+//        if(onehundred != 0){
+//            printf("One hundred Bank notes: \t%d\n", onehundred);
+//        }
+//        if(ten != 0){
+//            printf("Ten Baht Coins: \t\t%d\n", ten);
+//        }
+//        if(one != 0){
+//            printf("One Baht Coins: \t\t%d\n", one);
+//        }
     }
 }
 
-
-void user_deposit(double balance, double amount) {
+void user_deposit(double balance, double amount, char*u) {
+    char line[200];
+    char date[] = "11/1/2021";
     if (amount <= 0) {
         printf("Please enter a valid amount\nMinimum withdrawal 1 Baht.\n");
-    }
-    else if(amount > 0){
+    } else if (amount > 0) {
         balance = balance + amount;
         printf("Deposit Successful\n");
         printf("Your remaining balance: %.2lf\n", balance);
     }
+    FILE *acc = fopen("../accounts.csv", "r");
+    FILE *new = fopen("../new.csv", "w");
+    if (acc == NULL) {
+        printf("Error opening file");
+        fclose(acc);}
+    if (new == NULL) {
+        printf("Error opening file");
+        fclose(new);}
+
+
+//    remove("../accounts.csv");
+//    rename("../new.csv", "../accounts.csv");
+//    fclose(acc);
+//    fclose(new);
+    FILE *update_logs = fopen("../logs.csv", "a");
+    if (update_logs == NULL) {
+        printf("Error opening file");
+        fclose(update_logs);
+    }
+    fprintf(update_logs, "\n%s,%s,+%lf", u, date, amount);
+    fclose(update_logs);
 }
 
 void user_transfer(double balance, char destination, double destination_balance) {
@@ -143,11 +173,13 @@ void user_transfer(double balance, char destination, double destination_balance)
             }
             else if(amount <= balance){
             destination_balance += amount;
-            printf("Your remaining balance: %lf", balance);
+            printf("Transaction successful.\n");
+            printf("Your remaining balance: %lf\n", balance);
             }
         }
         else{
-            printf("Invalid taking you back to transfer menu.\n");
+            printf("Invalid operator.\n");
+            exit(0);
         }
     }
 }
@@ -703,7 +735,7 @@ int main() {
     double amount;
     scanf("%lf", &amount);
     double withdraw_balance = balance_check(username);
-    user_withdraw(withdraw_balance, amount);
+    user_withdraw(withdraw_balance, amount, username);
     user_withdraw_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
@@ -735,7 +767,7 @@ int main() {
     printf("Please enter amount to deposit: ");
     scanf("%lf", &amount);
     double deposit_balance = balance_check(username);
-    user_deposit(deposit_balance, amount);
+    user_deposit(deposit_balance, amount, username);
     user_deposit_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
