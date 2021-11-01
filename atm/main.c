@@ -24,6 +24,7 @@ void change_pin_new(char C[], char B[]){
 
     while(fgets(line, 200, str)){
         char *token;
+//        THIS FIRST 'IF CONDITION' CHUNK CHECKS  AND FINDS FOR THE DESIGNATED CHANGE TARGET
         token = strtok(line, ",");
         if (strcmp(token, C) == 0){
             strcpy(user, token);
@@ -35,6 +36,7 @@ void change_pin_new(char C[], char B[]){
             strcpy(pin, B);
             fprintf(new, "%s,%s,%s", user, pin, balance);
         }
+//        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO NEW FILE
         else{
             strcpy(user_n, token);
             token = strtok(NULL, ",");
@@ -148,7 +150,7 @@ void user_deposit(double balance, double amount, char*u) {
     fclose(update_logs);
 }
 
-void user_transfer(double balance, char destination, double destination_balance) {
+void user_transfer(double balance, char destination[], double destination_balance) {
     char line[200];
 
     FILE *stream = fopen("../accounts.csv", "r");
@@ -161,26 +163,23 @@ void user_transfer(double balance, char destination, double destination_balance)
     while (fgets(line, sizeof(line), stream)) {
         char *token;
         token = strtok(line, ",");
-        if (strcmp(token, &destination) == 0) {
+        if (strcmp(token, destination) == 0) {
             printf("Enter amount of transaction: \n");
             double amount;
             scanf("%lf", &amount);
             if(amount <= 0){
-                printf("Minimum amount of transaction is 1 Baht");
+                printf("Minimum amount of transaction is 1 Baht\n");
             }
             else if(amount > balance){
                 printf("Amount exceeding your balance.\n");
-                printf("Your remaining balance: %lf", balance);
+                printf("Your remaining balance: %lf\n", balance);
             }
             else if(amount <= balance){
             destination_balance += amount;
+            balance -= amount;
             printf("Transaction successful.\n");
             printf("Your remaining balance: %lf\n", balance);
             }
-        }
-        else{
-            printf("Invalid operator.\n");
-            exit(0);
         }
     }
 }
@@ -552,46 +551,34 @@ int main() {
     goto main_menu;
 
     transfer:
+    printf("TRANSFER MENU");
+    char line[200];
+    FILE *stream = fopen("../accounts.csv", "r");
     printf("-----TRANSFER MENU----\n");
     double transfer_balance = balance_check(username);
     char destination[50];
-    char line[200];
-    int user_count = 3;
-    FILE *stream = fopen("../accounts.csv", "r");
-    if (stream == NULL){
-        printf("Error opening file");
-        fclose(stream);
-        exit(1);
-    }
-    // Checking if user_input is a username in accounts.csv or not
-    // User can input username 3 times, after the third time
-    // if username is still not found, the program will terminate
-    while (user_count != 0) {
-        printf("Enter username of recipient: ");
+    while (1 == 1) {
+        printf("KUY: ");
         scanf("%s", destination);
         if (strcmp(destination, "quit") == 0) {
             fclose(stream);
             exit_program();
         }
         // Inside this loop, token is the value of usernames stored in accounts.csv
-        // If username is matched, it will exit the loop and continue to transfer process
+        // If username is matched, it will exit the loop and continue to ask for PIN
         while (fgets(line, sizeof(line), stream)) {
             char *token;
             token = strtok(line, ",");
             if (strcmp(token, destination) == 0){
-                fclose(stream);
-                goto transfer_process;
+                double destination_balance = balance_check(destination);
+                user_transfer(transfer_balance, destination, destination_balance);
+                goto transfer_option;
             }
         }
-        printf("Username NOT found\n");
-        printf("You have %d chance(s) left\n", --user_count);
-        fseek(stream, 0, SEEK_SET);
+        printf("USERNAME NOT FOUND\nTRY AGAIN\n");
+        goto transfer_option;
     }
-    printf("The username you have entered is not recorded in our system.\n");
-    fclose(stream);
-    printf("Taking you back to transfer menu.\n");
-    goto transfer;
-    // End of username checking
+
     transfer_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
@@ -612,28 +599,6 @@ int main() {
             border_line();
             goto transfer_option;
     }
-    transfer_process:
-    printf("HI");
-    FILE *accounts = fopen("../accounts.csv", "r");
-    if (accounts == NULL){
-        printf("Unable to open file");
-        exit(1);
-    }
-
-    while(fgets(line, sizeof(line), accounts)){
-        char* token;
-        token = strtok(line, ",");
-        while(token != NULL){
-            if (strcmp(token, destination) == 0){
-                token = strtok(NULL, ",");
-                token = strtok(NULL, ",");
-                return atof(token);
-            }
-        }
-    }
-//    double destination_balance = token;
-//    user_transfer(transfer_balance, destination, destination_balance);
-
 
 
     exit:
