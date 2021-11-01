@@ -3,56 +3,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 //#include <curses.h>
-//                    username    pin
-void change_pin_new(char C[], char B[]){
-    char line[200];
-
-    char user[50];
-    char pin[50];
-    char balance[50];
-    char user_n[50];
-    char pin_n[50];
-    char balance_n[50];
-    FILE *str = fopen("../accounts.csv", "r");
-    FILE *new = fopen("../new.csv", "w");
-    if (str == NULL) {
-        printf("Error opening file");
-        fclose(str);}
-    if (new == NULL) {
-        printf("Error opening file");
-        fclose(new);}
-
-    while(fgets(line, 200, str)){
-        char *token;
-//        THIS FIRST 'IF CONDITION' CHUNK CHECKS  AND FINDS FOR THE DESIGNATED CHANGE TARGET
-        token = strtok(line, ",");
-        if (strcmp(token, C) == 0){
-            strcpy(user, token);
-            token = strtok(NULL, ",");
-            strcpy(pin, token);
-            token = strtok(NULL, ",");
-            strcpy(balance, token);
-            token = strtok(NULL, ",");
-            strcpy(pin, B);
-            fprintf(new, "%s,%s,%s", user, pin, balance);
-        }
-//        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO NEW FILE
-        else{
-            strcpy(user_n, token);
-            token = strtok(NULL, ",");
-            strcpy(pin_n, token);
-            token = strtok(NULL, ",");
-            strcpy(balance_n, token);
-            token = strtok(NULL, ",");
-            fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
-        }
-    }
-    remove("../accounts.csv");
-    rename("../new.csv", "../accounts.csv");
-    fclose(str);
-    fclose(new);
-}
-
 
 void exit_program(){
     printf("Thank you and have a nice day");
@@ -62,217 +12,31 @@ void exit_program(){
 void print_receipt(){
 //    code for printing receipt
 }
-void user_withdraw(double balance, double amount, char*u){
-    char date[] = "11/1/2021";
-    if(balance < 0){
-        printf("Unable to continue withdrawal.\n");
-        printf("Your remaining balance: .2%lf\n", balance);
-    }
-    else if (amount < 20){
-        printf("Minimum withdrawal: 20 Baht\n");
-    }
-    else if (amount > balance){
-        printf("Request failed\nAmount exceeding balance\n");
-        printf("Your remaining balance: .2%lf\n", balance);
-    }
-    else if (amount <= balance){
-        balance = balance - amount;
-        printf("Withdrawal Successful\n");
-        printf("Your remaining balance: %.2lf\n", balance);
-        FILE *update = fopen("../logs.csv", "a");
-        if (update == NULL) {
-            printf("Error opening file");
-            fclose(update);
-        }
-        fprintf(update, "\n%s,%s,-%lf", u, date, amount);
-        fclose(update);
-//      THIS PART ONWARDS WILL BELONG IN THE GET_RECEIPT FUNCTION
-//        int amount_new;
-//        amount_new = amount;
-//        int thousand = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int fvehundred = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int onehundred = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int ten = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int one = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        if(thousand != 0){
-//            printf("Thousand Bank Notes: \t\t%d\n", thousand);
-//        }
-//        if(fvehundred != 0){
-//            printf("Five Hundred Bank Notes: \t%d\n", fvehundred);
-//        }
-//        if(onehundred != 0){
-//            printf("One hundred Bank notes: \t%d\n", onehundred);
-//        }
-//        if(ten != 0){
-//            printf("Ten Baht Coins: \t\t%d\n", ten);
-//        }
-//        if(one != 0){
-//            printf("One Baht Coins: \t\t%d\n", one);
-//        }
-    }
+void user_withdraw(){
+//    The code for withdrawing
 }
-
-void user_deposit(double balance, double amount, char*u) {
-    char date[] = "11/1/2021";
-    char line[200];
-    char user[50];
-    char pin[50];
-    char balance_old[50];
-    char user_n[50];
-    char pin_n[50];
-    char balance_n[50];
-    char new_balance[50];
-    if (amount <= 0) {
-        printf("Please enter a valid amount.\nMinimum amount of deposit: 1 Baht\n");
-    } else if (amount > 0) {
-        balance = balance + amount;
-        printf("Deposit Successful\n");
-        printf("Your remaining balance: %.2lf\n", balance);
-        snprintf(new_balance, 50, "%f", balance);
-        FILE *acc = fopen("../accounts.csv", "r");
-        FILE *new = fopen("../new.csv", "w");
-        if (acc == NULL) {
-            printf("Error opening file");
-            fclose(acc);}
-        if (new == NULL) {
-            printf("Error opening file");
-            fclose(new);}
-        while(fgets(line, 200, acc)){
-            char *token;
-//        THIS FIRST 'IF CONDITION' CHUNK CHECKS FINDS FOR THE DESIGNATED CHANGE TARGET THEN REPLACES BALANCE VALUE
-            token = strtok(line, ",");
-            if (strcmp(token, u) == 0){
-                strcpy(user, token);
-                token = strtok(NULL, ",");
-                strcpy(pin, token);
-                token = strtok(NULL, ",");
-                strcpy(balance_old, token);
-                token = strtok(NULL, ",");
-                strcpy(balance_old, new_balance);
-                fprintf(new, "%s,%s,%s", user, pin, new_balance);
-            }
-//        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO "NEW" FILE
-            else{
-                strcpy(user_n, token);
-                token = strtok(NULL, ",");
-                strcpy(pin_n, token);
-                token = strtok(NULL, ",");
-                strcpy(balance_n, token);
-                token = strtok(NULL, ",");
-                fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
-                remove("../accounts.csv");
-                rename("../new.csv", "../accounts.csv");
-                fclose(acc);
-                fclose(new);
-            }
-        }
-    }
-
-    FILE *update_logs = fopen("../logs.csv", "a");
-    if (update_logs == NULL) {
-        printf("Error opening file");
-        fclose(update_logs);
-    }
-    fprintf(update_logs, "\n%s,%s,+%lf", u, date, amount);
-    fclose(update_logs);
+void user_deposit(){
+//    The code for depositing
 }
-
-void user_transfer(double balance, char destination[], double destination_balance) {
-    char line[200];
-
-    FILE *stream = fopen("../accounts.csv", "r");
-    if (stream == NULL) {
-        printf("Error opening file");
-        fclose(stream);
-        exit(1);
-    }
-
-    while (fgets(line, sizeof(line), stream)) {
-        char *token;
-        token = strtok(line, ",");
-        if (strcmp(token, destination) == 0) {
-            printf("Enter amount of transaction: ");
-            double amount;
-            scanf("%lf", &amount);
-            if(amount <= 0){
-                printf("Minimum amount of transaction is 1 Baht\n");
-            }
-            else if(amount > balance){
-                printf("Amount exceeding your balance.\n");
-                printf("Your remaining balance: %lf\n", balance);
-            }
-            else if(amount <= balance){
-            destination_balance += amount;
-            balance -= amount;
-            printf("Transaction successful.\n");
-            printf("Your remaining balance: %lf\n", balance);
-            }
-        }
-    }
+void history_check(){
+//    The code for checking history
 }
-
-void history(char A[]) {
-    char l[200];
-    char user[50];
-    char date[50];
-    char action[50];
-    FILE *hist = fopen("../Action.csv", "r");
-    if (hist == NULL) {
-        printf("Error opening file");
-        fclose(hist);
-    }
-
-    while (fgets(l, sizeof(l) , hist)) {
-        char *token;
-        token = strtok(l, ",");
-        while (token != NULL) {
-            if (strcmp(token, A) == 0) {
-                strcpy(user, token);
-                token = strtok(NULL, ",");
-                strcpy(date, token);
-                token = strtok(NULL, ",");
-                strcpy(action, token);
-                token = strtok(NULL, ",");
-            }
-        }
-        if (atoi(action) < 0) {
-            printf("%s has transferred/withdraw\t: %d\t on %s\n", user, atoi(action), date);
-        }
-        else {
-            printf("%s has deposited\t\t\t: +%d\t on %s\n", user, atoi(action), date);
-        }
-    }
-    fclose(hist);
-}
-
-double balance_check(char *username){
-    char line[200];
+void balance_check(){
     FILE *accounts = fopen("../accounts.csv", "r");
     if (accounts == NULL){
         printf("Unable to open file");
         exit(1);
     }
+    char line[200];
     while(fgets(line, sizeof(line), accounts)){
         char *token;
         token = strtok(line, ",");
         while(token != NULL){
-            if (strcmp(token, username) == 0){
-                token = strtok(NULL, ",");
-                token = strtok(NULL, ",");
-                return atof(token);
-            }
-            else{
-                token = strtok(NULL, ",");
-            }
+            printf("%s", token);
+            token = strtok(NULL, ",");
         }
+        printf("\n");
     }
-    fclose(accounts);
-    return 0;
 }
 
 char* login(){
@@ -290,7 +54,8 @@ char* login(){
     // if username is still not found, the program will terminate
     while (user_count != 0) {
         printf("Enter username: ");
-        scanf("%s", user_input);
+        fgets(user_input, sizeof(user_input), stdin);
+        sscanf(user_input, "%s", &user_input);
         if (strcmp(user_input, "quit") == 0) {
             fclose(stream);
             exit_program();
@@ -325,7 +90,8 @@ char* login(){
     while (pin_count != 0){
         printf("Enter PIN: ");
         char pin_input[10];
-        scanf("%s", pin_input);
+        fgets(pin_input, sizeof(pin_input), stdin);
+        sscanf(pin_input, "%s", &pin_input);
         if (strcmp(line, "quit") == 0) {
             fclose(stream);
             exit_program();
@@ -343,7 +109,7 @@ char* login(){
     printf("Login successful\n");
     // Function is returning a char pointer to the username
     // user_input is only a local variable, so we need to create
-    // a variable that can be accessed from main()
+    // a variable that can be access from main()
     char *rtn_user = (char*)malloc(sizeof(user_input));
     strcpy(rtn_user, user_input);
     return rtn_user;
@@ -466,7 +232,7 @@ void create_username(){
 }
 
 void border_line(){
-//    sleep(2);
+    sleep(2);
     printf("------------------------------------------------------------------------\n");
 }
 
@@ -490,20 +256,17 @@ void print_account(){
 }
 
 int main() {
-//    char username[] = "babywoowoo";
-//    char pin[] = "778787";
-//    change_pin_new(username, pin);
-
     char* username;
     char user_password[50];
+
+    char og_user[]="MEGA";
+    char og_password[]="123456";
+    int comparison;
 
     int main_menu_input;
     int page_input;
 
-
     greetings:
-    fflush(stdin);
-    main_menu_input = 0;
     printf("Hello welcome to Mega bank ;3\nWe are the project of Firm, Fill and Zhen\n");
     sleep(2);
     printf("Please login to proceed further\n\n");
@@ -532,17 +295,16 @@ int main() {
     login:
     fflush(stdin);
     username = login();
-    printf("Username is: %s\n", username);// This is just for checking if it works or not
+    printf("Username is: %s\n", username); // This is just for checking if it works or not
 
     main_menu:
-    printf("*Please type in the number of the service you wish to operate*\n");
-    printf("[1]\tDeposit\n");
-    printf("[2]\tWithdraw\n");
-    printf("[3]\tCheck Balance\n");
-    printf("[4]\tSee History\n");
-    printf("[5]\tChange Pin\n");
-    printf("[6]\tTransfer\n");
-    printf("[7]\tExit Program\n");
+    printf("*Please type in the number of the service you wishes to operate*\n");
+    printf("[1]\tDeposit, Withdraw\n");
+    printf("[2]\tCheck Balance\n");
+    printf("[3]\tSee History\n");
+    printf("[4]\tChange Pin\n");
+    printf("[5]\tTransfer\n");
+    printf("[6]\tExit Program\n");
     printf("Enter your number:");
     scanf("%d", &main_menu_input);
     switch (main_menu_input) {
@@ -551,20 +313,17 @@ int main() {
             goto deposit;
         case 2:
             border_line();
-            goto withdraw;
+            goto balance;
         case 3:
             border_line();
-            goto balance;
+            goto history;
         case 4:
             border_line();
-            goto history;
+            goto pin_change;
         case 5:
             border_line();
-            goto pin_change;
-        case 6:
-            border_line();
             goto transfer;
-        case 7:
+        case 6:
             border_line();
             printf("Thank you for using our bank have a good time!\n");
             goto exit;
@@ -583,66 +342,24 @@ int main() {
     goto main_menu;
 
     transfer:
-    printf("---TRANSFER MENU---\n");
-    char line[200];
-    FILE *stream = fopen("../accounts.csv", "r");
-    double transfer_balance = balance_check(username);
-    char destination[50];
-    while (1 == 1) {
-        printf("Enter name of recipient: ");
-        scanf("%s", destination);
-        if (strcmp(destination, "quit") == 0) {
-            fclose(stream);
-            exit_program();
-        }
-        // Inside this loop, token is the value of usernames stored in accounts.csv
-        // If username is matched, it will exit the loop and continue to ask for PIN
-        while (fgets(line, sizeof(line), stream)) {
-            char *token;
-            token = strtok(line, ",");
-            if (strcmp(token, destination) == 0){
-                double destination_balance = balance_check(destination);
-                user_transfer(transfer_balance, destination, destination_balance);
-                goto transfer_option;
-            }
-        }
-        printf("USERNAME NOT FOUND\nTRY AGAIN\n");
-        goto transfer_option;
-    }
-
-    transfer_option:
-    printf("[1]\tGo back to main menu\n");
-    printf("[2]\tExit\n");
-    printf("[3]\tTransfer Again\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        case 3:
-            border_line();
-            goto transfer;
-        default:
-            border_line();
-            goto transfer_option;
-    }
-
+//    The code for transferring money here, however if it's too long Then use a function
+    printf("Process finished, taking you back to main menu");
+    border_line();
+    goto main_menu;
 
     exit:
     _exit(0);
 
 
     balance:
-    printf("%s your balance is: ", username);
-    double balance = balance_check(username);
-    printf("%.2f", balance);
-    printf("\n");
-    balance_option:
+//        Instead of this print line Use the provided function instead
+
+    balance_check();
+    printf("Your balance is ******* baht\n");
+
+//    ^^^
     printf("[1]\tGo back to main menu\n");
+    balance_option:
     printf("[2]\tExit\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
@@ -659,7 +376,12 @@ int main() {
     }
 
     history:
-    history(username);
+    //        Instead of this print line Use the provided function instead
+
+    history_check();
+    printf("Your history is *******\n");
+
+//    ^^^
     printf("[1]\tGo back to main menu\n");
     history_option:
     printf("[2]\tExit\n");
@@ -680,11 +402,12 @@ int main() {
 
 
     deposit:
-    printf("*Select command*\n");
+    printf("*Select command*\n*Note deposit and withdraw is still a work in progress*\n");
     deposit_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
     printf("[3]\tDeposit\n");
+    printf("[4]\tWithdraw\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
     switch (page_input) {
@@ -697,47 +420,22 @@ int main() {
         case 3:
             border_line();
             goto deposit_process;
+        case 4:
+            border_line();
+            goto withdraw_process;
         default:
             printf("Invalid operator, please enter again\n");
             border_line();
             goto deposit_option;
     }
 
-        withdraw:
-    printf("*Select command*\n");
-    withdraw_option:
-    printf("[1]\tGo back to main menu\n");
-    printf("[2]\tExit\n");
-    printf("[3]\tWithdraw\n");
-    printf("Enter your number:");
-    scanf("%d", &page_input);
-    switch (page_input) {
-        case 1:
-            border_line();
-            goto main_menu;
-        case 2:
-            border_line();
-            goto exit;
-        case 3:
-            border_line();
-            goto withdraw_process;
-        default:
-            printf("Invalid operator, please enter again\n");
-            border_line();
-            goto withdraw_option;
-    }
 
     withdraw_process:
-    printf("Please enter amount of withdrawal: ");
-    double amount;
-    scanf("%lf", &amount);
-    double withdraw_balance = balance_check(username);
-    user_withdraw(withdraw_balance, amount, username);
+    user_withdraw();
     user_withdraw_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
     printf("[3]\tGet receipt\n");
-    printf("[4]\tWithdraw Again\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
     switch (page_input) {
@@ -750,9 +448,6 @@ int main() {
         case 3:
             border_line();
             goto get_receipt;
-        case 4:
-            border_line();
-            goto withdraw_process;
         default:
             printf("Invalid operator, please enter again\n");
             border_line();
@@ -761,15 +456,12 @@ int main() {
 
 
     deposit_process:
-    printf("Please enter amount to deposit: ");
-    scanf("%lf", &amount);
-    double deposit_balance = balance_check(username);
-    user_deposit(deposit_balance, amount, username);
+//  function call for deposit process
+    user_deposit();
     user_deposit_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
     printf("[3]\tGet receipt\n");
-    printf("[4]\tDeposit Again\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
     switch (page_input) {
@@ -782,14 +474,12 @@ int main() {
         case 3:
             border_line();
             goto get_receipt;
-        case 4:
-            border_line();
-            goto deposit_process;
         default:
             printf("Invalid operator, please enter again\n");
             border_line();
             goto user_deposit_option;
     }
+
 
     get_receipt:
 //        If this is a hassle you can place the code directly into the switch case
