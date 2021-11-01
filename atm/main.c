@@ -52,7 +52,8 @@ void change_pin_new(char C[], char B[]){
     fclose(str);
     fclose(new);
 }
-
+//remove("../accounts.csv");
+//rename("../new.csv", "../accounts.csv");
 
 void exit_program(){
     printf("Thank you and have a nice day");
@@ -60,33 +61,6 @@ void exit_program(){
 }
 
 void print_receipt(){
-//    code for printing receipt
-}
-void user_withdraw(double balance, double amount, char*u){
-    char date[] = "11/1/2021";
-    if(balance < 0){
-        printf("Unable to continue withdrawal.\n");
-        printf("Your remaining balance: .2%lf\n", balance);
-    }
-    else if (amount < 20){
-        printf("Minimum withdrawal: 20 Baht\n");
-    }
-    else if (amount > balance){
-        printf("Request failed\nAmount exceeding balance\n");
-        printf("Your remaining balance: .2%lf\n", balance);
-    }
-    else if (amount <= balance){
-        balance = balance - amount;
-        printf("Withdrawal Successful\n");
-        printf("Your remaining balance: %.2lf\n", balance);
-        FILE *update = fopen("../logs.csv", "a");
-        if (update == NULL) {
-            printf("Error opening file");
-            fclose(update);
-        }
-        fprintf(update, "\n%s,%s,-%lf", u, date, amount);
-        fclose(update);
-//      THIS PART ONWARDS WILL BELONG IN THE GET_RECEIPT FUNCTION
 //        int amount_new;
 //        amount_new = amount;
 //        int thousand = amount_new / 1000;
@@ -114,6 +88,77 @@ void user_withdraw(double balance, double amount, char*u){
 //        if(one != 0){
 //            printf("One Baht Coins: \t\t%d\n", one);
 //        }
+}
+void user_withdraw(double balance, double amount, char*u){
+    char date[] = "11/1/2021";
+    char line[200];
+    char user[50];
+    char pin[50];
+    char balance_old[50];
+    char user_n[50];
+    char pin_n[50];
+    char balance_n[50];
+    char new_balance[50];
+    if(balance < 0){
+        printf("Unable to continue withdrawal.\n");
+        printf("Your remaining balance: .2%lf\n", balance);
+    }
+    else if (amount < 20){
+        printf("Minimum withdrawal: 20 Baht\n");
+    }
+    else if (amount > balance){
+        printf("Request failed\nAmount exceeding balance\n");
+        printf("Your remaining balance: .2%lf\n", balance);
+    }
+    else if (amount <= balance){
+        balance = balance - amount;
+        printf("Withdrawal Successful\n");
+        printf("Your remaining balance: %.2lf\n", balance);
+        snprintf(new_balance, 50, "%f", balance);
+        FILE *acc = fopen("../accounts.csv", "r");
+        FILE *new = fopen("../new.csv", "w");
+        if (acc == NULL) {
+            printf("Error opening file");
+            fclose(acc);}
+        if (new == NULL) {
+            printf("Error opening file");
+            fclose(new);}
+        while(fgets(line, 200, acc)){
+            char *token;
+//        THIS FIRST 'IF CONDITION' CHUNK FINDS FOR THE DESIGNATED CHANGE TARGET THEN REPLACES THE BALANCE VALUE
+            token = strtok(line, ",");
+            if (strcmp(token, u) == 0){
+                strcpy(user, token);
+                token = strtok(NULL, ",");
+                strcpy(pin, token);
+                token = strtok(NULL, ",");
+                strcpy(balance_old, token);
+                token = strtok(NULL, ",");
+                strcpy(balance_old, new_balance);
+                fprintf(new, "%s,%s,%s", user, pin, new_balance);
+            }
+//        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO "NEW" FILE
+            else{
+                strcpy(user_n, token);
+                token = strtok(NULL, ",");
+                strcpy(pin_n, token);
+                token = strtok(NULL, ",");
+                strcpy(balance_n, token);
+                token = strtok(NULL, ",");
+                fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
+            }
+        }
+        remove("../accounts.csv");
+        rename("../new.csv", "../accounts.csv");
+        fclose(acc);
+        fclose(new);
+        FILE *update_action = fopen("../Action.csv", "a");
+        if (update_action == NULL) {
+            printf("Error opening file");
+            fclose(update_action);
+        }
+        fprintf(update_action, "\n%s,%s,-%lf", u, date, amount);
+        fclose(update_action);
     }
 }
 
@@ -165,21 +210,21 @@ void user_deposit(double balance, double amount, char*u) {
                 strcpy(balance_n, token);
                 token = strtok(NULL, ",");
                 fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
-                remove("../accounts.csv");
-                rename("../new.csv", "../accounts.csv");
-                fclose(acc);
-                fclose(new);
             }
         }
+        remove("../accounts.csv");
+        rename("../new.csv", "../accounts.csv");
+        fclose(acc);
+        fclose(new);
     }
 
-    FILE *update_logs = fopen("../logs.csv", "a");
-    if (update_logs == NULL) {
+    FILE *update_action = fopen("../Action.csv", "a");
+    if (update_action == NULL) {
         printf("Error opening file");
-        fclose(update_logs);
+        fclose(update_action);
     }
-    fprintf(update_logs, "\n%s,%s,+%lf", u, date, amount);
-    fclose(update_logs);
+    fprintf(update_action, "\n%s,%s,+%lf", u, date, amount);
+    fclose(update_action);
 }
 
 void user_transfer(double balance, char destination[], double destination_balance) {
@@ -491,7 +536,7 @@ void print_account(){
 
 int main() {
 //    char username[] = "babywoowoo";
-//    char pin[] = "778787";
+//    char pin[] = "111111";
 //    change_pin_new(username, pin);
 
     char* username;
