@@ -72,8 +72,8 @@ void user_withdraw(double balance, double amount){
     }
     else if (amount <= balance){
         balance = balance - amount;
-        printf("\tWithdrawal Successful\n");
-        printf("\tYour remaining balance: %.2lf\n", balance);
+        printf("Withdrawal Successful\n");
+        printf("Your remaining balance: %.2lf\n", balance);
 //      from this part onwards will belong in the get receipt function
         int amount_new;
         amount_new = amount;
@@ -112,8 +112,8 @@ void user_deposit(double balance, double amount) {
     }
     else if(amount > 0){
         balance = balance + amount;
-        printf("\tDeposit Successful\n");
-        printf("\tYour remaining balance: %.2lf\n", balance);
+        printf("Deposit Successful\n");
+        printf("Your remaining balance: %.2lf\n", balance);
     }
 }
 
@@ -472,12 +472,13 @@ int main() {
 
     main_menu:
     printf("*Please type in the number of the service you wish to operate*\n");
-    printf("[1]\tDeposit, Withdraw\n");
-    printf("[2]\tCheck Balance\n");
-    printf("[3]\tSee History\n");
-    printf("[4]\tChange Pin\n");
-    printf("[5]\tTransfer\n");
-    printf("[6]\tExit Program\n");
+    printf("[1]\tDeposit\n");
+    printf("[2]\tWithdraw\n");
+    printf("[3]\tCheck Balance\n");
+    printf("[4]\tSee History\n");
+    printf("[5]\tChange Pin\n");
+    printf("[6]\tTransfer\n");
+    printf("[7]\tExit Program\n");
     printf("Enter your number:");
     scanf("%d", &main_menu_input);
     switch (main_menu_input) {
@@ -486,17 +487,20 @@ int main() {
             goto deposit;
         case 2:
             border_line();
-            goto balance;
+            goto withdraw;
         case 3:
             border_line();
-            goto history;
+            goto balance;
         case 4:
             border_line();
-            goto pin_change;
+            goto history;
         case 5:
             border_line();
-            goto transfer;
+            goto pin_change;
         case 6:
+            border_line();
+            goto transfer;
+        case 7:
             border_line();
             printf("Thank you for using our bank have a good time!\n");
             goto exit;
@@ -594,8 +598,8 @@ int main() {
             }
         }
     }
-    double destination_balance = token;
-    user_transfer(transfer_balance, destination, destination_balance);
+//    double destination_balance = token;
+//    user_transfer(transfer_balance, destination, destination_balance);
 
 
 
@@ -652,7 +656,6 @@ int main() {
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
     printf("[3]\tDeposit\n");
-    printf("[4]\tWithdraw\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
     switch (page_input) {
@@ -665,15 +668,35 @@ int main() {
         case 3:
             border_line();
             goto deposit_process;
-        case 4:
-            border_line();
-            goto withdraw_process;
         default:
             printf("Invalid operator, please enter again\n");
             border_line();
             goto deposit_option;
     }
 
+        withdraw:
+    printf("*Select command*\n");
+    withdraw_option:
+    printf("[1]\tGo back to main menu\n");
+    printf("[2]\tExit\n");
+    printf("[3]\tWithdraw\n");
+    printf("Enter your number:");
+    scanf("%d", &page_input);
+    switch (page_input) {
+        case 1:
+            border_line();
+            goto main_menu;
+        case 2:
+            border_line();
+            goto exit;
+        case 3:
+            border_line();
+            goto withdraw_process;
+        default:
+            printf("Invalid operator, please enter again\n");
+            border_line();
+            goto withdraw_option;
+    }
 
     withdraw_process:
     printf("Please enter amount of withdrawal: ");
