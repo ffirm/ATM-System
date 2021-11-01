@@ -6,12 +6,13 @@
 //                    username    pin
 void change_pin_new(char C[], char B[]){
     char line[200];
+
     char user[50];
-    char date[50];
-    char action[50];
+    char pin[50];
+    char balance[50];
     char user_n[50];
-    char date_n[50];
-    char action_n[50];
+    char pin_n[50];
+    char balance_n[50];
     FILE *str = fopen("../accounts.csv", "r");
     FILE *new = fopen("../new.csv", "w");
     if (str == NULL) {
@@ -27,21 +28,21 @@ void change_pin_new(char C[], char B[]){
         if (strcmp(token, C) == 0){
             strcpy(user, token);
             token = strtok(NULL, ",");
-            strcpy(date, token);
+            strcpy(pin, token);
             token = strtok(NULL, ",");
-            strcpy(action, token);
+            strcpy(balance, token);
             token = strtok(NULL, ",");
-            strcpy(date, B);
-            fprintf(new, "%s,%s,%s", user, date, action);
+            strcpy(pin, B);
+            fprintf(new, "%s,%s,%s", user, pin, balance);
         }
         else{
             strcpy(user_n, token);
             token = strtok(NULL, ",");
-            strcpy(date_n, token);
+            strcpy(pin_n, token);
             token = strtok(NULL, ",");
-            strcpy(action_n, token);
+            strcpy(balance_n, token);
             token = strtok(NULL, ",");
-            fprintf(new, "%s,%s,%s", user_n, date_n, action_n);
+            fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
         }
     }
     remove("../accounts.csv");
