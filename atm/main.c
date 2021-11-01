@@ -68,7 +68,7 @@ void user_withdraw(double balance, double amount, char*u){
         printf("Unable to continue withdrawal.\n");
         printf("Your remaining balance: .2%lf\n", balance);
     }
-    else if (amount <= 19){
+    else if (amount < 20){
         printf("Minimum withdrawal: 20 Baht\n");
     }
     else if (amount > balance){
@@ -118,29 +118,61 @@ void user_withdraw(double balance, double amount, char*u){
 }
 
 void user_deposit(double balance, double amount, char*u) {
-    char line[200];
     char date[] = "11/1/2021";
+    char line[200];
+    char user[50];
+    char pin[50];
+    char balance_old[50];
+    char user_n[50];
+    char pin_n[50];
+    char balance_n[50];
+    char new_balance[50];
     if (amount <= 0) {
-        printf("Please enter a valid amount\nMinimum withdrawal 1 Baht.\n");
+        printf("Please enter a valid amount.\nMinimum amount of deposit: 1 Baht\n");
     } else if (amount > 0) {
         balance = balance + amount;
         printf("Deposit Successful\n");
         printf("Your remaining balance: %.2lf\n", balance);
+        snprintf(new_balance, 50, "%f", balance);
+        FILE *acc = fopen("../accounts.csv", "r");
+        FILE *new = fopen("../new.csv", "w");
+        if (acc == NULL) {
+            printf("Error opening file");
+            fclose(acc);}
+        if (new == NULL) {
+            printf("Error opening file");
+            fclose(new);}
+        while(fgets(line, 200, acc)){
+            char *token;
+//        THIS FIRST 'IF CONDITION' CHUNK CHECKS FINDS FOR THE DESIGNATED CHANGE TARGET THEN REPLACES BALANCE VALUE
+            token = strtok(line, ",");
+            if (strcmp(token, u) == 0){
+                strcpy(user, token);
+                token = strtok(NULL, ",");
+                strcpy(pin, token);
+                token = strtok(NULL, ",");
+                strcpy(balance_old, token);
+                token = strtok(NULL, ",");
+                strcpy(balance_old, new_balance);
+                fprintf(new, "%s,%s,%s", user, pin, new_balance);
+            }
+//        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO "NEW" FILE
+            else{
+                strcpy(user_n, token);
+                token = strtok(NULL, ",");
+                strcpy(pin_n, token);
+                token = strtok(NULL, ",");
+                strcpy(balance_n, token);
+                token = strtok(NULL, ",");
+                fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
+                remove("../accounts.csv");
+                rename("../new.csv", "../accounts.csv");
+                fclose(acc);
+                fclose(new);
+            }
+        }
     }
-    FILE *acc = fopen("../accounts.csv", "r");
-    FILE *new = fopen("../new.csv", "w");
-    if (acc == NULL) {
-        printf("Error opening file");
-        fclose(acc);}
-    if (new == NULL) {
-        printf("Error opening file");
-        fclose(new);}
 
-
-//    remove("../accounts.csv");
-//    rename("../new.csv", "../accounts.csv");
-//    fclose(acc);
-//    fclose(new);
     FILE *update_logs = fopen("../logs.csv", "a");
     if (update_logs == NULL) {
         printf("Error opening file");
@@ -164,7 +196,7 @@ void user_transfer(double balance, char destination[], double destination_balanc
         char *token;
         token = strtok(line, ",");
         if (strcmp(token, destination) == 0) {
-            printf("Enter amount of transaction: \n");
+            printf("Enter amount of transaction: ");
             double amount;
             scanf("%lf", &amount);
             if(amount <= 0){
@@ -551,14 +583,13 @@ int main() {
     goto main_menu;
 
     transfer:
-    printf("TRANSFER MENU");
+    printf("---TRANSFER MENU---\n");
     char line[200];
     FILE *stream = fopen("../accounts.csv", "r");
-    printf("-----TRANSFER MENU----\n");
     double transfer_balance = balance_check(username);
     char destination[50];
     while (1 == 1) {
-        printf("KUY: ");
+        printf("Enter name of recipient: ");
         scanf("%s", destination);
         if (strcmp(destination, "quit") == 0) {
             fclose(stream);
