@@ -326,7 +326,6 @@ void user_transfer(double balance, char destination[], double destination_balanc
         }
     }
 
-
 void history(char A[]) {
     char l[200];
     char user[50];
@@ -341,15 +340,13 @@ void history(char A[]) {
     while (fgets(l, sizeof(l) , hist)) {
         char *token;
         token = strtok(l, ",");
-        while (token != NULL) {
-            if (strcmp(token, A) == 0) {
-                strcpy(user, token);
-                token = strtok(NULL, ",");
-                strcpy(date, token);
-                token = strtok(NULL, ",");
-                strcpy(action, token);
-                token = strtok(NULL, ",");
-            }
+        if (strcmp(token, A) == 0) {
+            strcpy(user, token);
+            token = strtok(NULL, ",");
+            strcpy(date, token);
+            token = strtok(NULL, ",");
+            strcpy(action, token);
+            token = strtok(NULL, ",");
         }
         if (atoi(action) < 0) {
             printf("%s has transferred/withdraw\t: %d\t on %s\n", user, atoi(action), date);
