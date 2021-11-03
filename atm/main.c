@@ -688,10 +688,26 @@ int main() {
 
 
     pin_change:
-//    The code for changing pin here, however if it's too long Then use a function
-    printf("Process finished, taking you back to main menu");
-    border_line();
-    goto main_menu;
+    printf("Enter The pin that you wishes to change into");
+    char pin[100];
+    scanf("%s", pin);
+    change_pin_new(username, pin);
+    pin_option:
+    printf("[1]\tGo back to main menu\n");
+    printf("[2]\tExit\n");
+    printf("Enter your number:");
+    scanf("%d", &page_input);
+    switch (page_input) {
+        case 1:
+            border_line();
+            goto main_menu;
+        case 2:
+            border_line();
+            goto exit;
+        default:
+            border_line();
+            goto pin_option;
+    }
 
     transfer:
     printf("---TRANSFER MENU---\n");
@@ -904,7 +920,7 @@ int main() {
 
     get_receipt:
 //        If this is a hassle you can place the code directly into the switch case
-    print_receipt();
+//    print_receipt();
     printf("Process finished, going back to main menu");
     border_line();
     goto main_menu;
