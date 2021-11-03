@@ -60,34 +60,33 @@ void exit_program(){
     exit(0);
 }
 
-void print_receipt(){
-//        int amount_new;
-//        amount_new = amount;
-//        int thousand = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int fvehundred = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int onehundred = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int ten = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        int one = amount_new / 1000;
-//        amount = amount_new % 1000;
-//        if(thousand != 0){
-//            printf("Thousand Bank Notes: \t\t%d\n", thousand);
-//        }
-//        if(fvehundred != 0){
-//            printf("Five Hundred Bank Notes: \t%d\n", fvehundred);
-//        }
-//        if(onehundred != 0){
-//            printf("One hundred Bank notes: \t%d\n", onehundred);
-//        }
-//        if(ten != 0){
-//            printf("Ten Baht Coins: \t\t%d\n", ten);
-//        }
-//        if(one != 0){
-//            printf("One Baht Coins: \t\t%d\n", one);
-//        }
+void print_receipt(char*u, int amount){
+
+        int thousand = amount / 1000;
+        amount = amount % 1000;
+        int fvehundred = amount / 1000;
+        amount = amount % 1000;
+        int onehundred = amount / 1000;
+        amount = amount % 1000;
+        int ten = amount / 1000;
+        amount = amount % 1000;
+        int one = amount / 1000;
+        amount = amount % 1000;
+        if(thousand != 0){
+            printf("Thousand Bank Notes: \t\t%d\n", thousand);
+        }
+        if(fvehundred != 0){
+            printf("Five Hundred Bank Notes: \t%d\n", fvehundred);
+        }
+        if(onehundred != 0){
+            printf("One Hundred Bank Notes: \t%d\n", onehundred);
+        }
+        if(ten != 0){
+            printf("Ten Baht Coins: \t\t%d\n", ten);
+        }
+        if(one != 0){
+            printf("One Baht Coins: \t\t%d\n", one);
+        }
 }
 void user_withdraw(double balance, double amount, char*u){
     char date[] = "11/1/2021";
@@ -906,7 +905,7 @@ int main() {
 
     get_receipt:
 //        If this is a hassle you can place the code directly into the switch case
-    print_receipt();
+    print_receipt(username, amount);
     printf("Process finished, going back to main menu");
     border_line();
     goto main_menu;
