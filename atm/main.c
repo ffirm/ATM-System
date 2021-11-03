@@ -227,9 +227,17 @@ void user_deposit(double balance, double amount, char*u) {
     fclose(update_action);
 }
 
-void user_transfer(double balance, char destination[], double destination_balance) {
+void user_transfer(double balance, char destination[], double destination_balance, char*u) {
+    char date[] = "11/3/2021";
     char line[200];
-
+    char user[50];
+    char pin[50];
+    char balance_old[50];
+    char user_n[50];
+    char pin_n[50];
+    char balance_n[50];
+    char user_balance_new[50];
+    char destination_balance_new[50];
     FILE *stream = fopen("../accounts.csv", "r");
     if (stream == NULL) {
         printf("Error opening file");
@@ -256,10 +264,70 @@ void user_transfer(double balance, char destination[], double destination_balanc
                 balance -= amount;
                 printf("Transaction successful.\n");
                 printf("Your remaining balance: %lf\n", balance);
+                snprintf(user_balance_new, 50, "%f", balance);
+                snprintf(destination_balance_new, 50, "%f", destination_balance);
+                FILE *acc = fopen("../accounts.csv", "r");
+                FILE *new = fopen("../new.csv", "w");
+                if (acc == NULL) {
+                    printf("Error opening file");
+                    fclose(acc);}
+                if (new == NULL) {
+                    printf("Error opening file");
+                    fclose(new);}
+                while(fgets(line, 200, acc)){
+                    char *token;
+//        THIS FIRST 'IF CONDITION' CHUNK CHECKS FINDS FOR THE DESIGNATED CHANGE TARGET THEN REPLACES BALANCE VALUE
+                    token = strtok(line, ",");
+                    if (strcmp(token, u) == 0){
+                        strcpy(user, token);
+                        token = strtok(NULL, ",");
+                        strcpy(pin, token);
+                        token = strtok(NULL, ",");
+                        strcpy(balance_old, token);
+                        token = strtok(NULL, ",");
+                        strcpy(balance_old, user_balance_new);
+                        fprintf(new, "%s,%s,%s", user, pin, user_balance_new);
+                    }
+                    else if (strcmp(token, destination) == 0){
+                        strcpy(user, token);
+                        token = strtok(NULL, ",");
+                        strcpy(pin, token);
+                        token = strtok(NULL, ",");
+                        strcpy(balance_old, token);
+                        token = strtok(NULL, ",");
+                        strcpy(balance_old, destination_balance_new);
+                        fprintf(new, "%s,%s,%s", user, pin, destination_balance_new);
+                    }
+//        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO "NEW" FILE
+                    else{
+                        strcpy(user_n, token);
+                        token = strtok(NULL, ",");
+                        strcpy(pin_n, token);
+                        token = strtok(NULL, ",");
+                        strcpy(balance_n, token);
+                        token = strtok(NULL, ",");
+                        fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
+                    }
+                }
+                remove("../accounts.csv");
+                rename("../new.csv", "../accounts.csv");
+                fclose(acc);
+                fclose(new);
+
+//    UPDATING ACTION FILE UPDATING ACTION FILE UPDATING ACTION FILE UPDATING ACTION FILE UPDATING ACTION FILE
+                FILE *update_action = fopen("../Action.csv", "a");
+                if (update_action == NULL) {
+                    printf("Error opening file");
+                    fclose(update_action);
+                }
+                fprintf(update_action, "\n%s,%s,-%lf", u, date, amount);
+                fprintf(update_action, "\n%s,%s,+%lf", destination, date, amount);
+                fclose(update_action);
+            }
             }
         }
     }
-}
+
 
 void history(char A[]) {
     char l[200];
@@ -647,7 +715,7 @@ int main() {
             token = strtok(line, ",");
             if (strcmp(token, destination) == 0){
                 double destination_balance = balance_check(destination);
-                user_transfer(transfer_balance, destination, destination_balance);
+                user_transfer(transfer_balance, destination, destination_balance, username);
                 goto transfer_option;
             }
         }
