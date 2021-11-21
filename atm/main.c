@@ -196,8 +196,9 @@ void user_deposit(double balance, double amount, char*u) {
                 token = strtok(NULL, ",");
                 strcpy(balance_old, token);
                 token = strtok(NULL, ",");
+                printf("new balance: %s, balance_old: %s\n", new_balance, balance_old);
                 strcpy(balance_old, new_balance);
-                fprintf(new, "%s,%s,%s", user, pin, new_balance);
+                fprintf(new, "%s,%s,%s\n", user, pin, new_balance);
             }
 //        THIS SECOND 'IF CONDITION' CHUNK REWRITES EVERY OTHER THING THAT ISN'T THE CHANGE TARGET INTO "NEW" FILE
             else{
@@ -207,13 +208,16 @@ void user_deposit(double balance, double amount, char*u) {
                 token = strtok(NULL, ",");
                 strcpy(balance_n, token);
                 token = strtok(NULL, ",");
-                fprintf(new, "%s,%s,%s", user_n, pin_n, balance_n);
+                fprintf(new, "%s,%s,%s\n", user_n, pin_n, balance_n);
             }
         }
-        remove("../accounts.csv");
-        rename("../new.csv", "../accounts.csv");
         fclose(acc);
         fclose(new);
+        // Not work function return -1
+        remove("../accounts.csv");
+        rename("./new.csv", "./accounts.csv");
+        //11printf("Result: %d", result);
+
     }
 
     FILE *update_action = fopen("../Action.csv", "a");
