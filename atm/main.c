@@ -553,7 +553,7 @@ void create_username(){
     printf("Minimum cash of 200BHT is needed to be deposited to create an account\n");
     printf("------------------------------------------\n");
     minimum_cash:
-    printf("Please enter the about of cash you want to deposit: \n");
+    printf("Please enter the amount of cash you want to deposit: \n");
     scanf("%f", &cash);
     if (cash < 200){
         printf("Minimum is 200BHT\n");
