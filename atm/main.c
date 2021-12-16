@@ -351,12 +351,13 @@ void history(char A[]) {
             token = strtok(NULL, ",");
             strcpy(action, token);
             token = strtok(NULL, ",");
-        }
-        if (atoi(action) < 0) {
-            printf("%s has transferred/withdraw\t: %d\t on %s\n", user, atoi(action), date);
-        }
-        else {
-            printf("%s has deposited\t\t\t: +%d\t on %s\n", user, atoi(action), date);
+
+            if (atoi(action) < 0) {
+                printf("%s has transferred/withdraw\t: %d\t on %s\n", user, atoi(action), date);
+            }
+            else {
+                printf("%s has deposited\t\t\t: +%d\t on %s\n", user, atoi(action), date);
+            }
         }
     }
     fclose(hist);
