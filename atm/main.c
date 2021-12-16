@@ -60,33 +60,6 @@ void exit_program(){
     exit(0);
 }
 
-void print_receipt(char *u, int amount){
-        int thousand = amount / 1000;
-        amount = amount % 1000;
-        int fvehundred = amount / 1000;
-        amount = amount % 1000;
-        int onehundred = amount / 1000;
-        amount = amount % 1000;
-        int ten = amount / 1000;
-        amount = amount % 1000;
-        int one = amount / 1000;
-        amount = amount % 1000;
-        if(thousand != 0){
-            printf("Thousand Bank Notes: \t\t%d\n", thousand);
-        }
-        if(fvehundred != 0){
-            printf("Five Hundred Bank Notes: \t%d\n", fvehundred);
-        }
-        if(onehundred != 0){
-            printf("One hundred Bank notes: \t%d\n", onehundred);
-        }
-        if(ten != 0){
-            printf("Ten Baht Coins: \t\t%d\n", ten);
-        }
-        if(one != 0){
-            printf("One Baht Coins: \t\t%d\n", one);
-        }
-}
 void user_withdraw(double balance, double amount, char*u){
     char date[] = "11/1/2021";
     char line[200];
@@ -865,8 +838,7 @@ int main() {
     user_withdraw_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
-    printf("[3]\tGet receipt\n");
-    printf("[4]\tWithdraw Again\n");
+    printf("[3]\tWithdraw Again\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
     switch (page_input) {
@@ -877,9 +849,6 @@ int main() {
             border_line();
             goto exit;
         case 3:
-            border_line();
-            goto get_receipt;
-        case 4:
             border_line();
             goto withdraw_process;
         default:
@@ -897,8 +866,7 @@ int main() {
     user_deposit_option:
     printf("[1]\tGo back to main menu\n");
     printf("[2]\tExit\n");
-    printf("[3]\tGet receipt\n");
-    printf("[4]\tDeposit Again\n");
+    printf("[3]\tDeposit Again\n");
     printf("Enter your number:");
     scanf("%d", &page_input);
     switch (page_input) {
@@ -910,22 +878,12 @@ int main() {
             goto exit;
         case 3:
             border_line();
-            goto get_receipt;
-        case 4:
-            border_line();
             goto deposit_process;
         default:
             printf("Invalid operator, please enter again\n");
             border_line();
             goto user_deposit_option;
     }
-
-    get_receipt:
-//        If this is a hassle you can place the code directly into the switch case
-//    print_receipt();
-    printf("Process finished, going back to main menu");
-    border_line();
-    goto main_menu;
 
     return 0;
 }
