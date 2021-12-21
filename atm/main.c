@@ -663,7 +663,7 @@ int main() {
 
 
     pin_change:
-    printf("Enter The pin that you wishes to change into");
+    printf("Enter The pin that you wishes to change into: ");
     char pin[100];
     scanf("%s", pin);
     change_pin_new(username, pin);
